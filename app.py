@@ -1806,10 +1806,15 @@ def start_background_refresh():
 def home():
     return jsonify({"message": "MMA Webhook is running!"})
 
-@app.route("/webhook", methods=["POST"])
+@app.route("/webhook", methods=["POST", "GET"])
 def webhook():
+    # For GET requests (like test requests from Chatbase)
+    if request.method == "GET":
+        return jsonify({"response": "This is the MMA webhook endpoint. Please send a POST request with a 'message' field in JSON format."})
+    
+    # For POST requests
     data = request.get_json()
-
+    
     # If there's no data or message, return an error
     if not data or "message" not in data:
         return jsonify({"response": "Invalid request, missing 'message' in JSON data"}), 400
